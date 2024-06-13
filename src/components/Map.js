@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-import { Hits } from 'react-instantsearch';
+import { Hits, SearchBox, useHits } from 'react-instantsearch';
 
 import {icon} from '../locationIcon/locationIcon';
 
@@ -61,19 +61,23 @@ export default function Map() {
   const [lng, setLng] = useState(79.75);
   const [lat, setLat] = useState(29.81);
   const [zoom, setZoom] = useState(3);
+  const markersList = [];
 
-  const Hit = ({ hit }) => {
+  const Hit = ( hit ) => {
+    const { hits } = useHits(hit);
+    // console.log(hits);
+    markersList.forEach(m => m.remove());
 
-    // const user = {
-    //     fullName: hit.fullName,
-    //     designation: hit.designation,
-    //     city: hit.location.city,
-    //     country: hit.location.country
-    // }
-    // const el = createHit(user);
+    hits.map(h => {
+      const marker = new mapboxgl.Marker()
+    .setLngLat([h.location.lng, h.location.lat]).addTo(map.current);
+    markersList.push(marker);
+    })
         
-    const marker = new mapboxgl.Marker()
-    .setLngLat([hit.location.lng, hit.location.lat]).addTo(map.current);
+    // const marker = new mapboxgl.Marker()
+    // .setLngLat([hit.location.lng, hit.location.lat]).addTo(map.current);
+
+    // markersList.push(marker);
   }
 
   const fetchData = async () => {
@@ -110,8 +114,9 @@ export default function Map() {
 
   return (
     <div>
+      <SearchBox />
       <div ref={mapContainer} className="map-container" />
-      <Hits hitComponent={Hit} />
+      <Hit />
     </div>
   );
 }

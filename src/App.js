@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './App.css';
 import Map from './components/Map';
 import algoliasearch from 'algoliasearch/lite';
-import { InstantSearch, SearchBox, Hits } from 'react-instantsearch';
+import { InstantSearch, SearchBox, } from 'react-instantsearch';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 
 
@@ -16,7 +16,7 @@ function App() {
  
   return (
     <InstantSearch indexName="users_index" searchClient={searchClient}>
-      <SearchBox />
+      
       <Map /> 
     </InstantSearch>
   );
