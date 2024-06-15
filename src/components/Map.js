@@ -1,120 +1,83 @@
 import { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-import { Hits, SearchBox, useHits } from 'react-instantsearch';
+import { Hits, SearchBox, useHits, queryHook } from 'react-instantsearch';
+import { creteZoomControl } from '../utils/zoomControls';
+import { createMarker } from '../utils/marker';
 
-import {icon} from '../locationIcon/locationIcon';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAP_ACCESS_TOKEN;
-
-
-const createMarker = (user) => {
-  const el = document.createElement("div");
-  el.className = "custom-marker";
-  var nameParagraph = document.createElement("p");
-  var designationParagraph = document.createElement("p");
-  var cityParagraph = document.createElement("p");
-
-  nameParagraph.className = "marker-para";
-  designationParagraph.className = "marker-para";
-  cityParagraph.className = "marker-para";
-
-  // Set text content for each paragraph
-  nameParagraph.textContent = user.fullName;
-  designationParagraph.textContent = user.designation;
-  cityParagraph.textContent = `${user.location.city}, ${user.location.country}`;
-
-  // Append paragraphs to the div
-  el.appendChild(nameParagraph);
-  el.appendChild(designationParagraph);
-  el.appendChild(cityParagraph);
-
-  return el;
-}
-
-const createHit = (user) => {
-    console.log(user);
-    const el = document.createElement("div");
-  el.className = "custom-marker";
-  var nameParagraph = document.createElement("p");
-  var designationParagraph = document.createElement("p");
-  var cityParagraph = document.createElement("p");
-
-  nameParagraph.className = "marker-para";
-  designationParagraph.className = "marker-para";
-  cityParagraph.className = "marker-para";
-
-  nameParagraph.textContent = user.fullName;
-  designationParagraph.textContent = user.designation;
-  cityParagraph.textContent = `${user.city}, ${user.country}`;
-
-  el.appendChild(nameParagraph);
-//   el.appendChild(designationParagraph);
-//   el.appendChild(cityParagraph);
-  
-  return el;
-}
 
 
 export default function Map() {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(79.75);
-  const [lat, setLat] = useState(29.81);
-  const [zoom, setZoom] = useState(3);
+  const [lng, setLng] = useState(0);
+  const [lat, setLat] = useState(0);
+  const [zoom, setZoom] = useState(1);
+  // const[ users, setusers ] = useState([]);
+  // const[ searching, setSearching ] = useState(false);
+  let searching = false;
   const markersList = [];
 
   const Hit = ( hit ) => {
-    const { hits } = useHits(hit);
-    // console.log(hits);
-    markersList.forEach(m => m.remove());
+    const {hits} = useHits(hit);
 
-    hits.map(h => {
-      const marker = new mapboxgl.Marker()
-    .setLngLat([h.location.lng, h.location.lat]).addTo(map.current);
+    console.log(hits);
+    markersList.forEach(m => m.remove());
+  
+    hits.map(user => {
+      const el = createMarker(user);
+      const marker = new mapboxgl.Marker(el)
+    .setLngLat([user.location.lng, user.location.lat]).addTo(map.current);
     markersList.push(marker);
     })
         
-    // const marker = new mapboxgl.Marker()
-    // .setLngLat([hit.location.lng, hit.location.lat]).addTo(map.current);
-
-    // markersList.push(marker);
   }
-
-  const fetchData = async () => {
-    const data = await fetch('./users.json');
-    const users = await data.json();
-    
-    users.forEach((user, idx) => {
-        const el =icon(user);
-        console.log(el);
-        new mapboxgl.Marker(el)
-            .setLngLat([user.location.lng, user.location.lat])
-            .addTo(map.current);
-    })
-  }
-
-
 
   useEffect( () => {
     if (map.current) return; 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
+      style: 'mapbox://styles/mapbox/streets-v9',
       center: [lng, lat],
-      zoom: zoom
+      zoom: zoom,
+      renderWorldCopies: false,
+      interactive: false
     });
 
 
-    map.current.on('move', () => {
-      setLng(map.current.getCenter().lng.toFixed(4));
-      setLat(map.current.getCenter().lat.toFixed(4));
-      setZoom(map.current.getZoom().toFixed(2));
-    });
-  });
+    // map.current.on('move', () => {
+    //   setLng(map.current.getCenter().lng.toFixed(4));
+    //   setLat(map.current.getCenter().lat.toFixed(4));
+    //   setZoom(map.current.getZoom().toFixed(2));
+    // });
+
+    creteZoomControl(map);
+
+  },[]);
 
   return (
     <div>
-      <SearchBox />
+      <SearchBox  
+        classNames={{
+         input: searching ? 'selectedInput' : '', 
+        }} 
+        // queryHook={searchUsers}
+        placeholder={"Search Members"} 
+      />
+      <div className='suggestion-list'>
+        {/* {
+          users.map((user) => {
+            return (
+              <div key={user.objectID} className='suggestion-item'>
+                <div className='suggestion-item-name'>{user.fullName}</div>
+                <div className='suggestion-item-designation'>{user.designation}</div>
+                <div className='suggestion-item-city'>{`${user.location.city}, ${user.location.country}`}</div>
+              </div>
+            )
+          })
+        } */}
+      </div>
       <div ref={mapContainer} className="map-container" />
       <Hit />
     </div>

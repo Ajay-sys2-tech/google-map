@@ -1,27 +1,53 @@
 .map-container {
   height: 700px;
+  overflow: visible;
 }
 
-.sidebar {
-  background-color: rgb(35 55 75 / 90%);
-  color: #fff;
-  padding: 6px 12px;
-  font-family: monospace;
-  z-index: 1;
+
+.ais-SearchBox {
   position: absolute;
   top: 0;
-  left: 0;
-  margin: 12px;
-  border-radius: 4px;
+  z-index: 1;
+  width: 700px;
+  padding: 6px 12px;
+  margin: 20px 10px;
 }
 
-/* 
+
+.ais-SearchBox-input {
+  width: 100%;
+  height: 50px;
+  padding: 8px 16px;
+  border: 2px solid #d4d8e3;
+  border-radius: 8px;
+  background: #fff;
+  font-size: medium;
+  
+}
+
+.selectedInput {
+  border: 2px solid #72e555;
+}
+
+.ais-SearchBox-submit,
+.ais-SearchBox-reset {
+  display: none
+}
+
+.suggestion-list {
+  /* position: relative; */
+  z-index: 1;
+}
+
 .custom-marker {
   background-color: white  ;
-  padding: 5px;
-  max-height: 45px;
-  opacity: 40%;
-} */
+  padding: 3px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
 /* 
 .custom-marker::after {
   content: "";
@@ -30,15 +56,44 @@
   margin-left: -6px;
   border-width: 6px;
   border-style: solid;
+  background-color: red;
   border-color: #ffffff transparent transparent transparent;
 } */
-/* 
+
+.contentDiv {
+  margin: 0 5px;
+  padding: 0 4px;
+  padding-bottom: 4px;
+}
 .marker-para{
-  height: 13px;
-  margin: 2px;
-  font-size: 2px;
+  height: 15px;
+  margin: 0;
+  font-size: 10px;
   font-weight: 600;
-} */
+  color: gray;
+}
+
+.contentDiv > :first-child {
+  font-size: 12px;
+  font-weight: 600;
+  color: black;
+}
+
+.imageDiv {
+  width: 40px;
+  height: 40px;
+  padding: 1px;
+  border: 2px solid rgb(215, 20, 183);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.imageDiv img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
 
 
 
@@ -74,5 +129,10 @@
   width: 90%;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.mapboxgl-ctrl-icon img {
+  width: 20px;
+  height: 20px;
 }
 
