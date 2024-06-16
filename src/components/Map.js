@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-import { Hits, SearchBox, useHits, queryHook } from 'react-instantsearch';
+import { Hits, SearchBox, useHits, queryHook, Pagination } from 'react-instantsearch';
 import { creteZoomControl } from '../utils/zoomControls';
 import { createMarker } from '../utils/marker';
 
@@ -14,15 +14,16 @@ export default function Map() {
   const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
   const [zoom, setZoom] = useState(1);
-  // const[ users, setusers ] = useState([]);
-  // const[ searching, setSearching ] = useState(false);
-  let searching = false;
+  // const { status } = useInstantSearch();
+  let users = [];
   const markersList = [];
+
 
   const Hit = ( hit ) => {
     const {hits} = useHits(hit);
+    users = [...hits];
 
-    console.log(hits);
+    console.log(users);
     markersList.forEach(m => m.remove());
   
     hits.map(user => {
@@ -32,6 +33,25 @@ export default function Map() {
     markersList.push(marker);
     })
         
+  }
+
+  const Suggestions = ({users}) => {
+    console.log(users);
+    return(
+      <div className='suggestion-list'>
+        {
+          users.map((user) => {
+            return (
+              <div key={user.objectID} className='suggestion-item'>
+                <div className='suggestion-item-name'>{user.fullName}</div>
+                <div className='suggestion-item-designation'>{user.designation}</div>
+                <div className='suggestion-item-city'>{`${user.location.city}, ${user.location.country}`}</div>
+              </div>
+            )
+          })
+        }
+      </div>
+    )
   }
 
   useEffect( () => {
@@ -46,11 +66,11 @@ export default function Map() {
     });
 
 
-    // map.current.on('move', () => {
-    //   setLng(map.current.getCenter().lng.toFixed(4));
-    //   setLat(map.current.getCenter().lat.toFixed(4));
-    //   setZoom(map.current.getZoom().toFixed(2));
-    // });
+    map.current.on('move', () => {
+      setLng(map.current.getCenter().lng.toFixed(4));
+      setLat(map.current.getCenter().lat.toFixed(4));
+      setZoom(map.current.getZoom().toFixed(2));
+    });
 
     creteZoomControl(map);
 
@@ -60,26 +80,22 @@ export default function Map() {
     <div>
       <SearchBox  
         classNames={{
-         input: searching ? 'selectedInput' : '', 
+        //  input: searching ? 'selectedInput' : '', 
+          // input: status === 'loading' || status === 'stalled' ? 'selectedInput' : '',
         }} 
         // queryHook={searchUsers}
         placeholder={"Search Members"} 
       />
-      <div className='suggestion-list'>
-        {/* {
-          users.map((user) => {
-            return (
-              <div key={user.objectID} className='suggestion-item'>
-                <div className='suggestion-item-name'>{user.fullName}</div>
-                <div className='suggestion-item-designation'>{user.designation}</div>
-                <div className='suggestion-item-city'>{`${user.location.city}, ${user.location.country}`}</div>
-              </div>
-            )
-          })
-        } */}
-      </div>
-      <div ref={mapContainer} className="map-container" />
       <Hit />
+      <div ref={mapContainer} className="map-container" />
+      <Pagination 
+        classNames={{
+          list: 'pagination-list',
+          item: 'pagination-item',
+          link: 'pagination-link',
+          selectedItem: 'pagination-selectedItem'
+        }} 
+      />
     </div>
   );
 }
