@@ -19,7 +19,7 @@ export default function Map() {
   const markersList = [];
 
 
-  const Hit = ( hit ) => {
+  const DisplayHit = ( hit ) => {
     const {hits} = useHits(hit);
     users = [...hits];
 
@@ -31,7 +31,27 @@ export default function Map() {
       const marker = new mapboxgl.Marker(el)
     .setLngLat([user.location.lng, user.location.lat]).addTo(map.current);
     markersList.push(marker);
-    })
+    });
+
+    return(
+      <div className='suggestion-list'>
+        {
+          hits.map((user) => {
+            return (
+              <div key={user.objectID} className='suggestion-item'>
+                <div className='suggestion-item-profilePic'>
+                  <img src={user.photo} alt='profile'/>
+                </div>
+                <div className='suggestion-item-content'>
+                  <div className='suggestion-item-name'>{user.fullName}</div>
+                  <div className='suggestion-item-address'>{`${user.location.city}, ${user.location.country}`}</div>
+                </div>
+              </div>
+            )
+          })
+        }
+      </div>
+    )
         
   }
 
@@ -86,7 +106,7 @@ export default function Map() {
         // queryHook={searchUsers}
         placeholder={"Search Members"} 
       />
-      <Hit />
+      <DisplayHit />
       <div ref={mapContainer} className="map-container" />
       <Pagination 
         classNames={{

@@ -136,6 +136,71 @@
   height: 20px;
 }
 
+.suggestion-list {
+  position: absolute;
+  z-index: 1;
+  width: 300px;
+  /* padding: 6px 1px; */
+  margin-top: 70px;
+  margin-left: 25px;
+  max-height: 300px;
+  overflow-y: auto; 
+}
+
+.suggestion-list::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  margin: 30;
+}
+
+/* Track (the area the thumb slides over) */
+.suggestion-list::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the track */
+}
+
+
+/* Handle (the draggable part of the scrollbar) */
+.suggestion-list::-webkit-scrollbar-thumb {
+  background: rgb(184, 181, 181); /* Color of the handle */
+  border-radius: 6px;
+  height: 50px;
+}
+.suggestion-item {
+  background-color: white  ;
+  padding: 3px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.suggestion-item-profilePic {
+  width: 40px;
+  height: 40px;
+  padding: 1px;
+  margin: 3px 5px;
+  border: 2px solid rgb(215, 20, 183);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.suggestion-item-profilePic img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.suggestion-item-name {
+  font-size: medium;
+  font-weight: 600;
+  color: black;
+}
+
+.suggestion-item-address {
+  font-size: small;
+  font-weight: 400;
+  color: gray;
+}
+
 
 .pagination-list {
   display: flex;
