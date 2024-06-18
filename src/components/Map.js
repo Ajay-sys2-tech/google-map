@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
-import { Hits, SearchBox, useHits, queryHook, Pagination } from 'react-instantsearch';
+import { Hits, SearchBox, useHits, Pagination } from 'react-instantsearch';
 import { creteZoomControl } from '../utils/zoomControls';
 import { createMarker } from '../utils/marker';
 
@@ -11,30 +11,47 @@ mapboxgl.accessToken = process.env.REACT_APP_MAP_ACCESS_TOKEN;
 export default function Map() {
   const mapContainer = useRef(null);
   const map = useRef(null);
+  const suggestionListRef = useRef(null);
   const [lng, setLng] = useState(0);
   const [lat, setLat] = useState(0);
   const [zoom, setZoom] = useState(1);
-  // const { status } = useInstantSearch();
-  let users = [];
   const markersList = [];
+
+  const closeSuggestions = (event) => {
+    if (suggestionListRef.current) {
+      suggestionListRef.current.style.display = 'none';
+    }
+  }
+
+  const searchUsers = (query, search) => {
+    if (query.length === 0) {
+      suggestionListRef.current.style.display = 'none';
+    }
+    else if (suggestionListRef.current) {
+      suggestionListRef.current.style.display = 'block';
+    }
+    search(query);
+  };
 
 
   const DisplayHit = ( hit ) => {
     const {hits} = useHits(hit);
-    users = [...hits];
 
-    console.log(users);
     markersList.forEach(m => m.remove());
   
     hits.map(user => {
       const el = createMarker(user);
-      const marker = new mapboxgl.Marker(el)
+      const marker = new mapboxgl.Marker({
+        element: el,
+        anchor: 'bottom',
+        // offset: [0, -20]
+      })
     .setLngLat([user.location.lng, user.location.lat]).addTo(map.current);
     markersList.push(marker);
     });
 
     return(
-      <div className='suggestion-list'>
+      <div ref={suggestionListRef}  className='suggestion-list'>
         {
           hits.map((user) => {
             return (
@@ -55,33 +72,15 @@ export default function Map() {
         
   }
 
-  const Suggestions = ({users}) => {
-    console.log(users);
-    return(
-      <div className='suggestion-list'>
-        {
-          users.map((user) => {
-            return (
-              <div key={user.objectID} className='suggestion-item'>
-                <div className='suggestion-item-name'>{user.fullName}</div>
-                <div className='suggestion-item-designation'>{user.designation}</div>
-                <div className='suggestion-item-city'>{`${user.location.city}, ${user.location.country}`}</div>
-              </div>
-            )
-          })
-        }
-      </div>
-    )
-  }
 
   useEffect( () => {
     if (map.current) return; 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v9',
+      style: 'mapbox://styles/mapbox/streets-v8',
       center: [lng, lat],
       zoom: zoom,
-      renderWorldCopies: false,
+      // renderWorldCopies: false,
       interactive: false
     });
 
@@ -103,7 +102,8 @@ export default function Map() {
         //  input: searching ? 'selectedInput' : '', 
           // input: status === 'loading' || status === 'stalled' ? 'selectedInput' : '',
         }} 
-        // queryHook={searchUsers}
+        queryHook={searchUsers}
+        onSubmit={closeSuggestions}
         placeholder={"Search Members"} 
       />
       <DisplayHit />
