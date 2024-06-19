@@ -25,17 +25,14 @@
   
 }
 
-.selectedInput {
-  border: 2px solid #72e555;
+.ais-SearchBox-submit {
+  display: none
 }
-
-.ais-SearchBox-submit,
 .ais-SearchBox-reset {
   display: none
 }
 
 .suggestion-list {
-  /* position: relative; */
   z-index: 1;
 }
 
@@ -57,16 +54,6 @@
 
 
 .triangle {
-  /* content: '';
-  position: absolute;
-  bottom: -10px; 
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 10px 10px 0 10px; 
-  border-style: solid;
-  border-color: white transparent transparent transparent;
-  color: red; */
-
   width: 0;
   height: 0;
   margin-top: -1px;
@@ -74,18 +61,6 @@
   border-right: 10px solid transparent;
   border-top: 10px solid white;
 }
-
-/* 
-.custom-marker::after {
-  content: "";
-  position: relative;
-  left: 50%;
-  margin-left: -6px;
-  border-width: 6px;
-  border-style: solid;
-  background-color: red;
-  border-color: #ffffff transparent transparent transparent;
-} */
 
 .contentDiv {
   margin: 0 5px;
@@ -141,7 +116,7 @@
 .profile-pic {
   width: 28px;
   height: 28px;
-  /* transform: rotate(-135deg); */
+  transform: rotate(-135deg);
   margin-top: 5px;
   margin-left: 2px;
   margin-right: 4px;
@@ -251,7 +226,6 @@
 
 .pagination-link {
   font-size: large;
-  /* font-weight: 600; */
   color: black;
   text-decoration: none; 
 }

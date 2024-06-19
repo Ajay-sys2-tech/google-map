@@ -44,7 +44,6 @@ export default function Map() {
       const marker = new mapboxgl.Marker({
         element: el,
         anchor: 'bottom',
-        // offset: [0, -20]
       })
     .setLngLat([user.location.lng, user.location.lat]).addTo(map.current);
     markersList.push(marker);
@@ -54,6 +53,7 @@ export default function Map() {
       <div ref={suggestionListRef}  className='suggestion-list'>
         {
           hits.map((user) => {
+            let country = user.location.country.length !== 0 ? ", " + user.location.country : "";
             return (
               <div key={user.objectID} className='suggestion-item'>
                 <div className='suggestion-item-profilePic'>
@@ -61,7 +61,7 @@ export default function Map() {
                 </div>
                 <div className='suggestion-item-content'>
                   <div className='suggestion-item-name'>{user.fullName}</div>
-                  <div className='suggestion-item-address'>{`${user.location.city}, ${user.location.country}`}</div>
+                  <div className='suggestion-item-address'>{user.location.city + country}</div>
                 </div>
               </div>
             )
@@ -80,16 +80,16 @@ export default function Map() {
       style: 'mapbox://styles/mapbox/streets-v8',
       center: [lng, lat],
       zoom: zoom,
-      // renderWorldCopies: false,
+      renderWorldCopies: false,
       interactive: false
     });
 
 
-    map.current.on('move', () => {
-      setLng(map.current.getCenter().lng.toFixed(4));
-      setLat(map.current.getCenter().lat.toFixed(4));
-      setZoom(map.current.getZoom().toFixed(2));
-    });
+    // map.current.on('move', () => {
+    //   setLng(map.current.getCenter().lng.toFixed(4));
+    //   setLat(map.current.getCenter().lat.toFixed(4));
+    //   setZoom(map.current.getZoom().toFixed(2));
+    // });
 
     creteZoomControl(map);
 
@@ -98,13 +98,10 @@ export default function Map() {
   return (
     <div>
       <SearchBox  
-        classNames={{
-        //  input: searching ? 'selectedInput' : '', 
-          // input: status === 'loading' || status === 'stalled' ? 'selectedInput' : '',
-        }} 
         queryHook={searchUsers}
         onSubmit={closeSuggestions}
         placeholder={"Search Members"} 
+        
       />
       <DisplayHit />
       <div ref={mapContainer} className="map-container" />

@@ -28,7 +28,8 @@ export const createMarker = (user) => {
     // Set text content for each paragraph
     nameParagraph.textContent = user.fullName;
     designationParagraph.textContent = user.designation;
-    cityParagraph.textContent = `${user.location.city}, ${user.location.country}`;
+    let country = user.location.country.length !== 0 ? ", " + user.location.country : "";
+    cityParagraph.textContent = user.location.city + country;
   
     // Append paragraphs to the div
     contentDiv.appendChild(nameParagraph);
